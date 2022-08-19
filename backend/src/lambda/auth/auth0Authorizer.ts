@@ -65,6 +65,7 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
+  //received help from havt3l
   try {
     const cert = await getCertificate(jwt.header.kid)
     return verify(token, cert, { algorithms: ['RS256'] }) as JwtPayload
@@ -73,6 +74,7 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   }
 }
 
+//received help from havt3l
 async function getCertificate(outerKid: string): Promise<string> {
   try {
     logger.info('Getting a certificate')
@@ -88,12 +90,11 @@ async function getCertificate(outerKid: string): Promise<string> {
 
     cert = cert.match(/.{1,64}/g).join('\n')
     if (cert) {
-      cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----`
+      cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----\n`
     } else {
       throw new Error(`Full certificate could not be generated ` + cert)
     }
 
-    logger.info(cert)
 
     return cert
   } catch (e) {
