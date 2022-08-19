@@ -1,67 +1,32 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import * as middy from 'middy'
-import { cors, httpErrorHandler } from 'middy/middlewares'
-
-//import { updateTodo } from '../../businessLogic/todos'
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
-//import { getUserId } from '../utils'
-import {parseUserId} from "../../auth/utils"
+import { updateTodo } from '../../helpers/todos'
 
-const AWS = require('aws-sdk')
-
-const docClient = new AWS.DynamoDB.DocumentClient()
-export const handler = middy(
+export const handler = 
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-      const todoInput = event.pathParameters.todoId
-      const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
+      // const todoInput = event.pathParameters.todoId
+      // const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
       // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
       //helped by Tomasz Tarnowski on https://www.youtube.com/watch?v=yEJW4V7ddEQ&ab_channel=TomaszTarnowski
       console.log("Processing Event ", event);
     const authorization = event.headers.Authorization;
     const split = authorization.split(' ');
-    const jwtToken = split[1];
-    const user = parseUserId(jwtToken);
-      //const user = getUserId(event)
-      const todos = await docClient
-        .get({
-          TableName: process.env.TODOS_TABLE,
-          Key: {
-            todoId: todoInput,
-            userId: user
-          }
-        })
-        .promise()
+    const jwtToken = split[1];     
 
-      if (!todos.Item) {
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ error: "it doesn't exist" })
-        }
-      }
-
-      const newItem = {
-        userId: user,
-        todoId: todoInput,
-        name: updatedTodo.name,
-        dueDate: updatedTodo.dueDate
-      }
-
-      await docClient
-        .put({
-          Table: process.env.TODOS_TABLE,
-          Item: newItem
-        })
-        .promise()
+    const todoId = event.pathParameters.todoId;
+    const updatedTodo: UpdateTodoRequest = JSON.parse(event.body);
+  
+    const toDoItem = await updateTodo(updatedTodo, todoId, jwtToken);
 
       return {
-        statusCode: 200,
+        statusCode: 201,
         headers: {
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({ error: 'updated' })
+        body: JSON.stringify({"updated": toDoItem})
       }
     } catch (e) {
       return {
@@ -70,10 +35,3 @@ export const handler = middy(
       }
     }
   }
-)
-
-handler.use(httpErrorHandler()).use(
-  cors({
-    credentials: true
-  })
-)
