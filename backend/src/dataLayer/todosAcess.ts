@@ -16,7 +16,7 @@ export class todosAcess {
         private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
         private readonly s3Client: Types = new AWS.S3({ signatureVersion: 'v4' }),
         private readonly todoTable = process.env.TODOS_TABLE,
-        private readonly s3BucketName = process.env.S3_BUCKET_NAME) {
+        private readonly s3BucketName = process.env.IMAGES_S3_BUCKET) {
     }
 
     async getTodosForUser(userId: string): Promise<TodoItem[]> {
@@ -33,7 +33,7 @@ export class todosAcess {
             }
         }
         const result = await this.docClient.query(params).promise()
-        console.log(result)
+        //console.log(result)
         const items = result.Items
 
         return items as TodoItem[]

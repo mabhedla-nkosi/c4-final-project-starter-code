@@ -26,7 +26,7 @@ export async function createTodo(createTodoRequest: CreateTodoRequest, jwtToken:
     logger.info('Create Todo')
     const userId = parseUserId(jwtToken)
     const todoId =  uuidv4()
-    const bucketName = process.env.S3_BUCKET_NAME
+    const bucketName = process.env.IMAGES_S3_BUCKET
     
     return toDoAccess.createTodo({
         userId: userId,

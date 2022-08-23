@@ -28,8 +28,8 @@ provider:
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
     #ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    AUTH_0_SECRET_ID: Auth0Secret-${self:provider.stage}
-    AUTH_0_SECRET_FIELD: auth0Secret
+    #AUTH_0_SECRET_ID: Auth0Secret-${self:provider.stage}
+    #AUTH_0_SECRET_FIELD: auth0Secret
     IMAGES_S3_BUCKET: serverless2793b338-${self:provider.stage}
 
 #https://www.serverless.com/plugins/serverless-reqvalidator-plugin
@@ -132,6 +132,7 @@ functions:
           request:
             schemas:
               application/json: ${file(models/create-todo-model.json)}
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -154,6 +155,7 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -176,6 +178,7 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -221,14 +224,6 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
-    xMyRequestValidator:
-      Type: 'AWS::ApiGateway::RequestValidator'
-      Properties:
-        Name: 'my-req-validator'
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ValidateRequestBody: true
-        ValidateRequestParameters: false
     GatewayResponseDefault5XX:
       Type: AWS::ApiGateway::GatewayResponse
       Properties:
@@ -239,18 +234,23 @@ resources:
         ResponseType: DEFAULT_5XX
         RestApiId:
           Ref: ApiGatewayRestApi
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false
 
     # TODO: Create a DynamoDB table with local secondary index and a composite key
     TodosTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: Todos
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
           - AttributeName: todoId
-            AttributeType: S
-          - AttributeName: createdAt
             AttributeType: S
         KeySchema:
           - AttributeName: userId
@@ -258,15 +258,7 @@ resources:
           - AttributeName: todoId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        LocalSecondaryIndexes:
-          - IndexName: TodoIndex
-            KeySchema:
-              - AttributeName: userId
-                KeyType: HASH
-              - AttributeName: createdAt
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL # What attributes will be copied to an index
+        TableName: ${self:provider.environment.TODOS_TABLE}
 
     # TODO: Complete the bucket properties below.
     # Do not forget to add the CorsConfiguration propoerty
