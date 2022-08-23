@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { getTodosForUser as getTodosForUser } from '../../helpers/todos'
+import { getTodosForUser as getTodosForUser } from '../../businessLogic/todos'
 
 // TODO: Get all TODO items for a current user
 //helped by Tomasz Tarnowski on https://www.youtube.com/watch?v=yEJW4V7ddEQ&ab_channel=TomaszTarnowski

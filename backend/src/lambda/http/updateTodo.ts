@@ -2,7 +2,7 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
-import { updateTodo } from '../../helpers/todos'
+import { updateTodo } from '../../businessLogic/todos'
 
 export const handler = 
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {

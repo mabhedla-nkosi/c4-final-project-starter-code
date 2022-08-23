@@ -31,13 +31,12 @@ export class todosAcess {
             ExpressionAttributeValues: {
                 ":userId": userId
             }
-        };
+        }
+        const result = await this.docClient.query(params).promise()
+        console.log(result)
+        const items = result.Items
 
-        const result = await this.docClient.query(params).promise();
-        console.log(result);
-        const items = result.Items;
-
-        return items as TodoItem[];
+        return items as TodoItem[]
     }
 
     async createTodo(todoItem: TodoItem): Promise<TodoItem> {
@@ -48,10 +47,10 @@ export class todosAcess {
             Item: todoItem,
         };
 
-        const result = await this.docClient.put(params).promise();
-        console.log(result);
+        const result = await this.docClient.put(params).promise()
+        //console.log(result)
 
-        return todoItem as TodoItem;
+        return todoItem as TodoItem
     }
 
     async updateTodo(todoUpdate: TodoUpdate, todoId: string, userId: string): Promise<TodoUpdate> {
@@ -75,13 +74,13 @@ export class todosAcess {
                 ":c": todoUpdate['done']
             },
             ReturnValues: "ALL_NEW"
-        };
+        }
 
-        const result = await this.docClient.update(params).promise();
-        console.log(result);
-        const attributes = result.Attributes;
+        const result = await this.docClient.update(params).promise()
+        console.log(result)
+        const attributes = result.Attributes
 
-        return attributes as TodoUpdate;
+        return attributes as TodoUpdate
     }
 
     async deleteTodo(todoId: string, userId: string): Promise<string> {
@@ -93,12 +92,12 @@ export class todosAcess {
                 "userId": userId,
                 "todoId": todoId
             },
-        };
+        }
 
-        const result = await this.docClient.delete(params).promise();
-        console.log(result);
+        const result = await this.docClient.delete(params).promise()
+        console.log(result)
 
-        return "" as string;
+        return "" as string
     }
 
     async presignedUrl(todoId: string): Promise<string> {
@@ -109,8 +108,8 @@ export class todosAcess {
             Key: todoId,
             Expires: 300,
         });
-        console.log(url);
+        console.log(url)
 
-        return url as string;
+        return url as string
     }
 }

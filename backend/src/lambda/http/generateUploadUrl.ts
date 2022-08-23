@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { presignedUrl } from '../../helpers/todos'
+import { presignedUrl } from '../../businessLogic/todos'
 
 export const handler =
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
