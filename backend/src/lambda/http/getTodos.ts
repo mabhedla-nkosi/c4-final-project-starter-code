@@ -21,6 +21,13 @@ export const handler =
         },
         body: JSON.stringify({ toDos })
       }
-    } catch (e) {}
+    } catch (e) {
+      return {
+      statusCode: 404,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({ e })
+    }}
   }
 

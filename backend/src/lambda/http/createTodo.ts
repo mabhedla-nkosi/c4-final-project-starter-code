@@ -27,6 +27,9 @@ export const handler =  async (event: APIGatewayProxyEvent): Promise<APIGatewayP
     } catch (e) {
       return {
         statusCode: 404,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        },
         body: JSON.stringify({ e })
       }
     }

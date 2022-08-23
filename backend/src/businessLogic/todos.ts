@@ -22,7 +22,7 @@ export async function getTodosForUser(jwtToken: string): Promise<TodoItem[]> {
     return toDoAccess.getTodosForUser(userId)
 }
 
-export function createTodo(createTodoRequest: CreateTodoRequest, jwtToken: string): Promise<TodoItem> {
+export async function createTodo(createTodoRequest: CreateTodoRequest, jwtToken: string): Promise<TodoItem> {
     logger.info('Create Todo')
     const userId = parseUserId(jwtToken)
     const todoId =  uuidv4()
@@ -38,19 +38,19 @@ export function createTodo(createTodoRequest: CreateTodoRequest, jwtToken: strin
     })
 }
 
-export function updateTodo(updateTodoRequest: UpdateTodoRequest, todoId: string, jwtToken: string): Promise<TodoUpdate> {
+export async function updateTodo(updateTodoRequest: UpdateTodoRequest, todoId: string, jwtToken: string): Promise<TodoUpdate> {
     logger.info('Update todo')
     const userId = parseUserId(jwtToken);
     return toDoAccess.updateTodo(updateTodoRequest, todoId, userId)
 }
 
-export function deleteTodo(todoId: string, jwtToken: string): Promise<string> {
+export async function deleteTodo(todoId: string, jwtToken: string): Promise<string> {
     logger.info('Delete todo')
     const userId = parseUserId(jwtToken);
     return toDoAccess.deleteTodo(todoId, userId)
 }
 
-export function presignedUrl(todoId: string): Promise<string> {
+export async function presignedUrl(todoId: string): Promise<string> {
     logger.info('Presigned url')
     return toDoAccess.presignedUrl(todoId)
 }

@@ -31,6 +31,9 @@ export const handler =
     } catch (e) {
       return {
         statusCode: 404,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        },
         body: JSON.stringify({ e })
       }
     }
